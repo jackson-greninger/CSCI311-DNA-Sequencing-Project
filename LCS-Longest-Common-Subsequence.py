@@ -16,6 +16,31 @@ def clean_file (DNA_sequences):
         
     return sequences
 
+def clean_file_dict(DNA_sequence):
+    sequence_dict = {}
+    curr_header = None
+
+    
+    file = open(DNA_sequence, "r")
+
+    for line in file:
+        line = line.strip()
+
+        if line.startswith(">"):
+            curr_header = line[1:]
+            sequence_dict[curr_header] = []
+        else:
+            sequence_dict[curr_header].append(line.upper())
+    
+    for header in sequence_dict:
+        sequence_dict[header] = "".join(sequence_dict[header])
+
+    return sequence_dict
+
+#def find_most_similar_seq(t, dna_sequences):
+
+
+
 def lcs(query, full_sequence):
     # do another loop to og through each quence in the full_sequence list 
     # ok so this is the algorithm technically
@@ -32,7 +57,7 @@ def lcs(query, full_sequence):
             else:
                 dp[i][j] = max(dp[i-1][j], dp[i][j-1])
 
-        return dp[m][n]
+        return dp[m][n] # return the length of the longest sequence
 
 
 if __name__ == "__main__":
@@ -40,11 +65,13 @@ if __name__ == "__main__":
     target = "DNA_query.txt"
     database = "DNA_sequences.txt"
     clean_database = clean_file(database)
+    clean_database1 = clean_file_dict(database)
 
     print("heloo")
     #print(clean_database)
 
-    print(lcs(target, clean_database))
+    #print(lcs(target, clean_database))
+    print(clean_database1)
 
     
         
