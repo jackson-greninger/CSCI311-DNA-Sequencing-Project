@@ -1,3 +1,9 @@
+"""
+TODO: Switch to dictionary format
+    - maybe make a global file to be used with the 3 algorithms
+        - Then change dictionary in each individual file to save
+        - dosctrings and comments please
+"""
 def clean_file (DNA_sequences):
     sequences = []
     current_seq = []
