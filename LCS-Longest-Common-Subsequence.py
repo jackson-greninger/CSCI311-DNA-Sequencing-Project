@@ -16,6 +16,21 @@ def clean_file (DNA_sequences):
         
     return sequences
 
+def lcs(query, full_sequence):
+    m = len(query)
+    n = len(full_sequence)
+
+    # initialize  a matrix
+    dp = [[0] * (n+1) for x in range(m+1)]
+
+    for i in range(1, m + 1):
+        for j in range(1, n+1):
+            if query[i - 1] == full_sequence[j-1]:
+                dp[i][j] = dp[i - 1][j - 1] + 1
+            else:
+                dp[i][j] = max(dp[i-1][j], dp[i][j-1])
+
+        return dp[m][n]
 
 
 if __name__ == "__main__":
@@ -24,7 +39,9 @@ if __name__ == "__main__":
     database = "DNA_sequences.txt"
     clean_database = clean_file(database)
 
-    print(clean_database)
+    #print(clean_database)
+
+    print(lcs(target, clean_database))
 
     
         
