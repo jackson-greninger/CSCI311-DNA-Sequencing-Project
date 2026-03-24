@@ -13,17 +13,31 @@ def clean_file(database):
                 current_seq = []
         else:
             current_seq.append(line)
-        
-    return sequences
 
     if current_seq:
         sequences.append("".join(current_seq))
 
+    return sequences
 
+def LCS(target, database):
+    matches = []
+    current_match = ""
+
+    for sequence in database:
+        for x in target:
+            for y in sequence:
+                # if we get matching characters (in progress)
+                if x == y:
+                    current_match += x
+                else:
+                    continue
+        
 
 
 if __name__ == "__main__":
-    # call LCS function
-    target = "CSCI311-DNA-Sequencing-Project\DNA_query.txt"
-    database = "CSCI311-DNA-Sequencing-Project\DNA_sequences.txt"
-    clean_file(database)
+    target = "DNA_query.txt"
+    database = "DNA_sequences.txt"
+    
+    cleaned_database = clean_file(database)
+    print(cleaned_database)
+
