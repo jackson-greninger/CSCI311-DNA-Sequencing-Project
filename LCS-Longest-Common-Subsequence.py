@@ -17,6 +17,8 @@ def clean_file (DNA_sequences):
     return sequences
 
 def lcs(query, full_sequence):
+    # do another loop to og through each quence in the full_sequence list 
+    # ok so this is the algorithm technically
     m = len(query)
     n = len(full_sequence)
 
@@ -39,6 +41,7 @@ if __name__ == "__main__":
     database = "DNA_sequences.txt"
     clean_database = clean_file(database)
 
+    print("heloo")
     #print(clean_database)
 
     print(lcs(target, clean_database))
