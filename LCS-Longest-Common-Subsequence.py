@@ -8,10 +8,11 @@ TODO: Switch to dictionary format
 import SequenceDictionary as sd
 
 """
-Implementation of algorithm 1 to find the most simlar seq
+docstring and comments
+Implementation of algorithm 1 to find the most similar seq
 returns the name of the sequence aswell as the sequence itself
 """
-def find_most_simlar_seq(t, dna_sequence, headers):
+def find_most_similar_seq(t, dna_sequence, headers):
     best_sim = float("-inf")
     best_seq_index = None
     
@@ -26,7 +27,9 @@ def find_most_simlar_seq(t, dna_sequence, headers):
         
     return headers[best_seq_index], best_sim
 
-
+"""
+dosctrings and comments please
+"""
 def LCS(query, full_sequence):
     m = len(query)
     n = len(full_sequence)
@@ -44,7 +47,6 @@ def LCS(query, full_sequence):
 
     return dp[m][n] # return the length of the longest sequence
 
-
 if __name__ == "__main__":
     # call LCS function
     target = "DNA_query.txt"
@@ -53,7 +55,7 @@ if __name__ == "__main__":
     target_dna = sd.open_qery_file(target)
     headers, sequences = sd.clean_dna_sequence_dict(database)
 
-    best_name, best_score = find_most_simlar_seq(target_dna, sequences, headers)
+    best_name, best_score = find_most_similar_seq(target_dna, sequences, headers)
     print(f"The most similar sequence is: {best_name}")
     print(f"The Longest Common Subsequence length is: {best_score}")
 
