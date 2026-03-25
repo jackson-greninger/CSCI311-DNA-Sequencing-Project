@@ -12,7 +12,6 @@ FONT_SMALL = ('Arial', 12)
 
 DARK_GREEN  = '#044004'
 MID_GREEN   = '#2d7a2d'
-WHITE       = '#ffffff'
 
 ########### BUTTON FORMAT ###########
 def apply_styles():
@@ -28,15 +27,17 @@ def apply_styles():
                 padding = (20,20),
                 relief = 'flat',)
     s.map('main.TButton',
-          background= [('active', MID_GREEN), ('disabled', '#aaaaaa')],
+          background = [('active', MID_GREEN), ('disabled', '#aaaaaa')],
           foreground = [('disabled', '#dddddd')])
 
     # file-picking buttons
     s.configure('file.TButton',
-                background=MID_GREEN, foreground=WHITE,
-                font=('Arial', 10), padding=(8, 6), relief='flat')
+                background = MID_GREEN, foreground= 'white',
+                font = ('Arial', 10),
+                padding = (8, 6),
+                relief='flat')
     s.map('file.TButton',
-          background=[('active', DARK_GREEN)])
+          background = [('active', DARK_GREEN)])
 
     # drop-down
     s.configure('TDrop',
@@ -142,6 +143,128 @@ class WelcomePage(tk.Frame):
                      fg = DARK_GREEN,
                      font = FONT_SMALL).pack(side = 'bottom', pady = 12)
 ########### ########### ########### ###########
+
+########### FILE SELECTION ###########
+class FileSelectionPage(tk.Frame):
+    """
+    Query and DNA Sequence Files selection page.
+    Continue button pops up when all the right files have been selected.
+    """
+
+    # Algorithm Options
+    ALGORITHMS = ['Longest Common Substring', 'Longest-Common Subsequence', 'Needleman-Wunsch']
+
+    def __init__(self, parent, controller):
+        super().__init__(parent, bg = BG)
+        self.controller = controller
+
+        # store live input values
+        self.query_var = tk.StringVar()
+        self.seq_var = tk.StringVar()
+        self.algorithm_var = tk.StringVar()
+
+        self._build()
+
+        # continue button appears after all files input
+        for var in (self.query_var, self.seq_var, self.algorithm_var):
+            var.trace_add('write', self._check_ready)
+
+        def _build(self):
+            tk.Frame(self,
+                     bg = DARK_GREEN,
+                     height=6).pack(fill='x')
+
+            # header banner
+            header = tk.Frame(self,
+                              bg = DARK_GREEN)
+            header.pack(fill='x')
+            tk.Label(header,
+                     text = 'Select Your Files',
+                     bg = DARK_GREEN,
+                     fg = 'white',
+                     font = ('Arial', 16, 'bold'),
+                     pady = 14).pack()
+
+            # white card
+            card = tk.Frame(self,
+                            bg = 'white',
+                            bd = 0,
+                            highlightbackground = '#c8e6c8',
+                            highlightthickness = 1)
+
+            card.pack(padx = 60,
+                      pady = 30,
+                      fill = 'both',
+                      expand=True)
+
+            # content div
+            inner = tk.Frame(card, bg = 'white')
+            inner.pack(padx = 30,
+                       pady = 24,
+                       fill = 'both',
+                       expand = True)
+
+            inner.columnconfigure(0, weight = 1)
+
+            # file selection title rows
+            file_row(inner, 'Query File ', row = 0, var = self.query_var)
+            file_row(inner, 'DNA Sequences File ', row = 2, var = self.seq_var)
+
+            # algorithm dropdown menu
+            tk.Label(inner, text = 'Algorithm',
+                     bg = 'white',
+                     fg = DARK_GREEN,
+                     font = FONT_LABEL).grid(
+                            row = 1,
+                            column = 0,
+                            sticky = 'w',
+                            pady = (14, 2))
+
+            self.drop = ttk.Combobox(inner,
+                                     textvariable = self.algorithm_var,
+                                     values = self.ALGORITHMS,
+                                     state = 'readonly',
+                                     font = FONT_SMALL)
+            self.drop.set('select an algorithm')
+            self.drop.grid(row = 5,
+                           column = 0,
+                           columnspan = 2,
+                           sticky = 'ew',
+                           ipady = 4)
+
+
+            # creates continue button without visibility
+            self.continue_button = ttk.Button(inner,
+                                   text='Continue',
+                                   style='main.TButton',
+                                   command=self._go_next)
+            # Add or not back button to welcome page????
+
+        def _check_ready(self, *args):
+            """
+            Called when StringVars are changed.
+            Shows the continue button when all the file fields have been selected.
+            """
+            q = self.query_var.get().strip()
+            s = self.seq_var.get().strip()
+            a = self.algorithm_var.get()
+
+            if q and s and a in self.ALGORITHMS:
+                self.continue_button.grid(row = 6,
+                                          column = 0,
+                                          columnspan = 2,
+                                          pady = (24, 4),
+                                          sticky = 'e')
+            else:
+                self.continue_button.grid.remove()
+
+        def _go_next(self):
+            self.controller.show('Visualization')
+
+########### ########### ########### ###########
+
+
+
 
 class App(tk.Tk):
     def __init__(self):
