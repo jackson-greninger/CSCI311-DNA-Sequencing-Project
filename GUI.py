@@ -101,17 +101,47 @@ def file_row(parent, label_text, row, var):
             padx = (8, 0),
             pady = (0, 4)
         )
+########### ########### ########### ###########
 
-class Window(tk.Toplevel):
-    def __init__(self, parent):
-        super().__init__(parent)
+########### WELCOME PAGE ###########
+class WelcomePage(tk.Frame):
+    """
+    Welcome Page, potentially we could add info about the project here(?
+    Start Button connects to Sequence file selection page.
+    """
 
-        self.geometry('300x100')
-        self.title('Toplevel Window')
+    def __init__(self, parent, controller):
 
-        ttk.Button(self,
-                text='Close',
-                command=self.destroy).pack(expand=True)
+        super().__init__(parent, bg = BG)
+        self.controller = controller
+        self._build()
+
+        def _build(self):
+            tk.Frame(self, bg = DARK_GREEN, height = 6).pack(fill = 'x')
+            centre = tk.Frame(self,
+                              bg = BG)
+            centre.place(relx = 0.5,
+                         rely = 0.42,
+                         anchor = 'center')
+
+            # welcome Page title
+            tk.Label(centre,
+                        text="DNA Sequence Matching",
+                        bg=BG,
+                        fg=DARK_GREEN,
+                        font=FONT_TITLE).pack(pady=(8, 4))
+            # Start Button
+            ttk.Button(centre,
+                       text = 'Start',
+                       command = lambda: self.controller.show('ADD FILE PAGE NAME')).pack(pady= 30)
+
+            # Footer with credits
+            tk.Label(self,
+                     text = 'CSCI 311 - William Chastain, Jackson Greninger, Laura Ozoria, Cynthia Pintado',
+                     bg = BG,
+                     fg = DARK_GREEN,
+                     font = FONT_SMALL).pack(side = 'bottom', pady = 12)
+########### ########### ########### ###########
 
 class App(tk.Tk):
     def __init__(self):
