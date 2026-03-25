@@ -28,10 +28,9 @@ def find_most_simlar_seq(t, dna_sequence, headers):
 
 
 def LCS(query, full_sequence):
-    # do another loop to og through each quence in the full_sequence list 
-    # ok so this is the algorithm technically
     m = len(query)
     n = len(full_sequence)
+    sequence_string = ""
 
     # initialize  a matrix with base cases 0
     dp = [[0] * (n+1) for x in range(m+1)]
@@ -50,13 +49,14 @@ if __name__ == "__main__":
     # call LCS function
     target = "DNA_query.txt"
     database = "DNA_sequences.txt"
-
-    # open the query file?
-
+    
+    target_dna = sd.open_qery_file(target)
     headers, sequences = sd.clean_dna_sequence_dict(database)
 
+    best_name, best_score = find_most_simlar_seq(target_dna, sequences, headers)
+    print(f"The most similar sequence is: {best_name}")
+    print(f"The Longest Common Subsequence length is: {best_score}")
 
-    find_most_simlar_seq(target, sequences, headers)
 
     
 
