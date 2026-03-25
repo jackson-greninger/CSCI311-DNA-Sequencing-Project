@@ -87,20 +87,19 @@ def file_row(parent, label_text, row, var):
     def browse():
         """ Opens user's OS' file picker"""
         path = filedialog.askopenfilename(
-            filetypes = ['*.txt',
-                         ('All files', '*.*')])
+            filetypes = [('Text files', '*.txt'), ('All files', '*.*')])
 
         if path:
             var.set(path) # file-path
 
-        ttk.Button(parent,
-                   text = 'browse',
-                   style = 'file.TButton',
-                   command = browse).grid(
-            row = row + 1,
-            column = 1,
-            padx = (8, 0),
-            pady = (0, 4)
+    ttk.Button(parent,
+               text = 'browse',
+               style = 'file.TButton',
+               command = browse).grid(
+        row = row + 1,
+        column = 1,
+        padx = (8, 0),
+        pady = (0, 4)
         )
 ########### ########### ########### ###########
 
@@ -256,14 +255,14 @@ class FileSelectionPage(tk.Frame):
                                       pady = (24, 4),
                                       sticky = 'e')
         else:
-            self.continue_button.grid.remove()
+            self.continue_button.grid_remove()
 
     def _go_next(self):
         self.controller.show('Visualization')
 ########### ########### ########### ###########
 
 ########### VISUALISATION PAGE TBD ###########
-class VisualizaionPage(tk.Frame):
+class VisualizationPage(tk.Frame):
     """TBD VISUALIZATION"""
 
     def __init__(self, parent, controller):
@@ -283,43 +282,40 @@ class VisualizaionPage(tk.Frame):
                  font = ('Arial', 16, 'bold'),
                  pady = 14).pack()
 
-
-
-
+########### CONTROLLER ###########
 class App(tk.Tk):
+    """
+    TODO: DOCUMENTATION
+    """
     def __init__(self):
         super().__init__()
+        self.title('DNA Sequence Matching')
+        self.geometry('800x600')
+        self.resizable(False, False)
+        self.config(bg = BG)
 
-        self.geometry('800x700')
-        self.title('Welcome Page')
-        self.config(bg='#cef0ce')
+        apply_styles()
 
-        title1 = tk.Label(self, text='Welcome to DNA Sequence Matching',
-                          bg='#cef0ce',
-                          fg='#044004',
-                          font=('Arial', 20, "bold"),
-                          justify='center')
+        # page frame
+        container = tk.Frame(self, bg = BG)
+        container.pack(fill = 'both', expand = True)
+        container.grid_rowconfigure(0, weight = 1)
+        container.grid_columnconfigure(0, weight = 1)
 
-        title1.pack(pady=200, padx=50, anchor='center')
+        # pages set-up
+        self._pages = {}
+        for PageClass in (WelcomePage, FileSelectionPage, VisualizationPage):
+            name = PageClass.__name__.replace('Page', '')
+            page = PageClass(container, self)
+            self._pages[name] = page
 
-        # place a button on the root window
-        style = ttk.Style()
-        style.configure('start.TButton',
-                        background='#044004',
-                        foreground='#044004',
-                        font=('Arial', 20, "bold"),
-                        )
+            page.grid(row = 0, column = 0, sticky = 'nsew')
 
-        start_button = ttk.Button(self,
-                text='Start',
-                style='start.TButton',
-                command=self.open_window)
+        self.show('Welcome')
 
-        start_button.grid(row=0, column=0, sticky='nsew')
-
-    def open_window(self):
-        window = Window(self)
-        window.grab_set()
+    def show(self, name):
+        """TODO: DOCUMENTATION"""
+        self._pages[name].tkraise()
 
 if __name__ == "__main__":
     app = App()
