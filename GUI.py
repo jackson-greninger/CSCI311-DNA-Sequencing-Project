@@ -1,7 +1,4 @@
 import tkinter as tk
-from tkinter import ttk
-
-import tkinter as tk
 from tkinter import ttk, filedialog
 
 # global formatting
@@ -46,6 +43,56 @@ def apply_styles():
                 padding = (6,6),
                 font = FONT_SMALL)
 ########### ########### ########### ###########
+
+########### FILE-PICK HELPER ###########
+def file_row(parent, label_text, row, var):
+    """ TODO: WRITE DOCSTRING"""
+
+    # button text format
+    tk.Label(parent,
+             text=label_text,
+             bg = BG,
+             fg = DARK_GREEN,
+             font = FONT_LABEL).grid(
+                    row = row,
+                    column = 0,
+                    sticky = 'w',
+                    pady = (10, 2))
+
+    # entry button format
+    entry = tk.Entry(parent,
+                     textvariable = var,
+                     width = 46,
+                     font = FONT_SMALL,
+                     bg = 'white',
+                     relief = 'solid',
+                     bd = 1,
+                     fg = '#333333')
+
+    # button grid lining
+    entry.grid(row = row + 1,
+               column = 0,
+               sticky = 'ew',
+               ipady = 5,
+               pady = (0, 4))
+
+    def browse():
+        path = filedialog.askopenfilename(
+            filetypes = ['*.txt',
+                         ('All files', '*.*')])
+
+        if path:
+            var.set(path)
+
+        ttk.Button(parent,
+                   text = 'browse',
+                   style = 'file.TButton',
+                   command = browse).grid(
+            row = row + 1,
+            column = 1,
+            padx = (8, 0),
+            pady = (0, 4)
+        )
 
 class Window(tk.Toplevel):
     def __init__(self, parent):
