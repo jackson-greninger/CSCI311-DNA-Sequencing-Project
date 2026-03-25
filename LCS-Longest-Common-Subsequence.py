@@ -4,56 +4,36 @@ TODO: Switch to dictionary format
         - Then change dictionary in each individual file to save
         - dosctrings and comments please
 """
-def clean_file (DNA_sequences):
-    sequences = []
-    current_seq = []
-    
-    file = open(DNA_sequences, "r")
 
-    for line in file:
-        line = line.strip()
-            
-        if line.startswith(">"):
-            if current_seq:
-                sequences.append("".join(current_seq))
-                current_seq = []
-        else:
-            current_seq.append(line)
+import SequenceDictionary as sd
+
+"""
+Implementation of algorithm 1 to find the most simlar seq
+returns the name of the sequence aswell as the sequence itself
+"""
+def find_most_simlar_seq(t, dna_sequence, headers):
+    best_sim = float("-inf")
+    best_seq_index = None
+    
+    for i in range(len(dna_sequence)):
+        s_i = dna_sequence[i]
+
+        sim = LCS(s_i, t) # calling function 
+
+        if sim > best_sim:
+            best_sim = sim
+            best_seq_index = i
         
-    return sequences
-
-def clean_file_dict(DNA_sequence):
-    sequence_dict = {}
-    curr_header = None
-
-    
-    file = open(DNA_sequence, "r")
-
-    for line in file:
-        line = line.strip()
-
-        if line.startswith(">"):
-            curr_header = line[1:]
-            sequence_dict[curr_header] = []
-        else:
-            sequence_dict[curr_header].append(line.upper())
-    
-    for header in sequence_dict:
-        sequence_dict[header] = "".join(sequence_dict[header])
-
-    return sequence_dict
-
-#def find_most_similar_seq(t, dna_sequences):
+    return headers[best_seq_index], best_sim
 
 
-
-def lcs(query, full_sequence):
+def LCS(query, full_sequence):
     # do another loop to og through each quence in the full_sequence list 
     # ok so this is the algorithm technically
     m = len(query)
     n = len(full_sequence)
 
-    # initialize  a matrix
+    # initialize  a matrix with base cases 0
     dp = [[0] * (n+1) for x in range(m+1)]
 
     for i in range(1, m + 1):
@@ -63,21 +43,64 @@ def lcs(query, full_sequence):
             else:
                 dp[i][j] = max(dp[i-1][j], dp[i][j-1])
 
-        return dp[m][n] # return the length of the longest sequence
+    return dp[m][n] # return the length of the longest sequence
 
 
 if __name__ == "__main__":
     # call LCS function
     target = "DNA_query.txt"
     database = "DNA_sequences.txt"
-    clean_database = clean_file(database)
-    clean_database1 = clean_file_dict(database)
 
-    print("heloo")
-    #print(clean_database)
+    # open the query file?
 
-    #print(lcs(target, clean_database))
-    print(clean_database1)
+    headers, sequences = sd.clean_dna_sequence_dict(database)
+
+
+    find_most_simlar_seq(target, sequences, headers)
 
     
+
+
+
+
+
+# def clean_file (DNA_sequences):
+#     sequences = []
+#     current_seq = []
+    
+#     file = open(DNA_sequences, "r")
+
+#     for line in file:
+#         line = line.strip()
+            
+#         if line.startswith(">"):
+#             if current_seq:
+#                 sequences.append("".join(current_seq))
+#                 current_seq = []
+#         else:
+#             current_seq.append(line)
         
+#     return sequences
+
+# def clean_file_dict(DNA_sequence):
+#     sequence_dict = {}
+#     curr_header = None
+
+    
+#     file = open(DNA_sequence, "r")
+
+#     for line in file:
+#         line = line.strip()
+
+#         if line.startswith(">"):
+#             curr_header = line[1:]
+#             sequence_dict[curr_header] = []
+#         else:
+#             sequence_dict[curr_header].append(line.upper())
+    
+#     for header in sequence_dict:
+#         sequence_dict[header] = "".join(sequence_dict[header])
+
+#     return sequence_dict
+
+#def find_most_similar_seq(t, dna_sequences):
