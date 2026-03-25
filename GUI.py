@@ -258,6 +258,14 @@ class FileSelectionPage(tk.Frame):
             self.continue_button.grid_remove()
 
     def _go_next(self):
+        # set files so app can run algorithms
+        self.controller.run_algorithm(
+            self.query_var.get(),
+            self.seq_var.get(),
+            self.algorithm_var.get()
+        )
+
+
         self.controller.show('Visualization')
 ########### ########### ########### ###########
 
@@ -312,6 +320,12 @@ class App(tk.Tk):
             page.grid(row = 0, column = 0, sticky = 'nsew')
 
         self.show('Welcome')
+
+    def run_algorithm(self, query_file, sequences_file, algorithm):
+        """"
+        TODO: ALGORITHM
+        """
+        if algorithm == 'Longest Common Substring # wait
 
     def show(self, name):
         """TODO: DOCUMENTATION"""
