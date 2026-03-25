@@ -46,7 +46,14 @@ def apply_styles():
 
 ########### FILE-PICK HELPER ###########
 def file_row(parent, label_text, row, var):
-    """ TODO: WRITE DOCSTRING"""
+    """
+    Builds file picking row format.
+    Parameters:
+        parent - main frame of widget
+        label_text - button's text
+        row - start grid number
+        var - stores file path
+    """
 
     # button text format
     tk.Label(parent,
@@ -77,12 +84,13 @@ def file_row(parent, label_text, row, var):
                pady = (0, 4))
 
     def browse():
+        """ Opens user's OS' file picker"""
         path = filedialog.askopenfilename(
             filetypes = ['*.txt',
                          ('All files', '*.*')])
 
         if path:
-            var.set(path)
+            var.set(path) # file-path
 
         ttk.Button(parent,
                    text = 'browse',
