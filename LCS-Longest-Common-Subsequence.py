@@ -39,7 +39,7 @@ def LCS(query, full_sequence):
     sequence_string = ""
 
     # initialize  a matrix with base cases 0
-    dp = [[0] * (n+1) for x in range(m+1)]
+    dp = [[0] * (n + 1) for _ in range(m+1)]
 
     for i in range(1, m + 1):
         for j in range(1, n+1):
