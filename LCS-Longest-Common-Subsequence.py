@@ -1,50 +1,91 @@
-def clean_file (DNA_sequences):
-    sequences = []
-    current_seq = []
-    
-    file = open(DNA_sequences, "r")
+""""
+TODO: MAYBE ADD MORE COMMENTS IN ALGORITHM
+"""
+import SequenceDictionary as sd
 
-    for line in file:
-        line = line.strip()
-            
-        if line.startswith(">"):
-            if current_seq:
-                sequences.append("".join(current_seq))
-                current_seq = []
-        else:
-            current_seq.append(line)
+def find_most_similar_seq(t, dna_sequence, headers):
+    """
+    Searches for the closest DNA sequence to a target sequence (query) using lcs.
+
+    Params:
+            t (str) - Target DNA sequence (query).
+            dna_sequence (list[str]) - List of DNA sequences from database.
+            headers (list[str]) - List of sequences' headers.
+
+    Returns:
+            tuple:
+                    str - header of the closest DNA sequence.
+                    int - index of the closest DNA sequence.
+                    str - sequence of the closest DNA sequence.
+    """
+
+    best_sim = float("-inf")
+    best_seq_index = None
+    best_seq = ""
+    
+    for i in range(len(dna_sequence)):
+        s_i = dna_sequence[i]
+        sim, seq = lcs(s_i, t)
+
+        if sim > best_sim:
+            best_sim = sim
+            best_seq_index = i
+            best_seq = seq
         
-    return sequences
+    return headers[best_seq_index], best_sim, best_seq
 
 def lcs(query, full_sequence):
-    # do another loop to og through each quence in the full_sequence list 
-    # ok so this is the algorithm technically
+    """
+    Calculates the longest common subsequence between two sequences.
+
+    Params:
+            query (str) - Target DNA sequence.
+            full_sequence (str) - DNA database.
+
+    Returns:
+            tuple:
+                    int - length of the closest DNA sequence.
+                    str - sequence of the closest DNA sequence.
+    """
     m = len(query)
     n = len(full_sequence)
 
-    # initialize  a matrix
-    dp = [[0] * (n+1) for x in range(m+1)]
+    # initialize  a matrix with base cases 0
+    dp = [[0] * (n + 1) for _ in range(m+1)]
 
     for i in range(1, m + 1):
-        for j in range(1, n+1):
-            if query[i - 1] == full_sequence[j-1]:
+        for j in range(1, n + 1):
+            if query[i - 1] == full_sequence[j - 1]:
                 dp[i][j] = dp[i - 1][j - 1] + 1
             else:
                 dp[i][j] = max(dp[i-1][j], dp[i][j-1])
 
-        return dp[m][n]
+    # ACTUAL subsequence
+    sequence_string = ""
+    i = m
+    j = n
 
+    while i > 0 and j > 0:
+        if query[i - 1] == full_sequence[j - 1]: # if the characters match in the query
+            sequence_string += query[i - 1] # backtrack to create the string in order
+            i -= 1
+            j -= 1
+        elif dp[i - 1][j] >= dp[i][j - 1]:
+            i -= 1
+        else:
+            j -= 1
+
+    return dp[m][n], sequence_string # return the length of the longest sequence
 
 if __name__ == "__main__":
-    # call LCS function
+    # call lcs function
     target = "DNA_query.txt"
     database = "DNA_sequences.txt"
-    clean_database = clean_file(database)
-
-    print("heloo")
-    #print(clean_database)
-
-    print(lcs(target, clean_database))
-
     
-        
+    target_dna = sd.open_qery_file(target)
+    headers, sequences = sd.clean_dna_sequence_dict(database)
+
+    best_name, best_score, best_sequence = find_most_similar_seq(target_dna, sequences, headers)
+    print(f"The most similar sequence is: {best_name}")
+    print(f"The Longest Common Subsequence length is: {best_score}")
+    print(f"The Sequence String is: {best_sequence}")
