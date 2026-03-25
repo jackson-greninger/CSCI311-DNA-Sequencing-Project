@@ -7,12 +7,14 @@ TODO: Switch to dictionary format
 
 import SequenceDictionary as sd
 
-"""
-docstring and comments
-Implementation of algorithm 1 to find the most similar seq
-returns the name of the sequence aswell as the sequence itself
-"""
 def find_most_similar_seq(t, dna_sequence, headers):
+    """
+    TODO:
+    docstring and comments
+    Implementation of algorithm 1 to find the most similar seq
+    returns the name of the sequence aswell as the sequence itself
+    """
+
     best_sim = float("-inf")
     best_seq_index = None
     
@@ -27,10 +29,11 @@ def find_most_similar_seq(t, dna_sequence, headers):
         
     return headers[best_seq_index], best_sim
 
-"""
-dosctrings and comments please
-"""
 def LCS(query, full_sequence):
+    """
+    TODO:
+    dosctrings and comments please
+    """
     m = len(query)
     n = len(full_sequence)
     sequence_string = ""
