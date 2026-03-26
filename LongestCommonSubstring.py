@@ -54,7 +54,7 @@ def LCS(query, database):
                 if dp_table[i][j] == res:
                     best_seq = contents[i - res:i]
 
-        solutions.append(res, best_seq) #
+        solutions.append((res, best_seq)) #
 
     best_length, best_seq = max(solutions)
     index = solutions.index(max(solutions))
