@@ -23,7 +23,6 @@ def apply_styles():
     s.configure('main.TButton',
                 background= DARK_GREEN,
                 foreground = 'white',
-                font = FONT_COLOR,
                 padding = (20,20),
                 relief = 'flat',)
     s.map('main.TButton',
@@ -133,7 +132,7 @@ class WelcomePage(tk.Frame):
         # Start Button
         ttk.Button(centre,
                    text = 'Start',
-                   command = lambda: self.controller.show('FileSelection')).pack(pady= 30)
+                   command = lambda: self.controller.show('FileSelection')).pack(pady= 30, ipadx = 30)
 
         # Footer with credits
         tk.Label(self,
@@ -214,7 +213,7 @@ class FileSelectionPage(tk.Frame):
                  bg = 'white',
                  fg = DARK_GREEN,
                  font = FONT_LABEL).grid(
-                        row = 1,
+                        row = 4,
                         column = 0,
                         sticky = 'w',
                         pady = (14, 2))
@@ -258,17 +257,67 @@ class FileSelectionPage(tk.Frame):
             self.continue_button.grid_remove()
 
     def _go_next(self):
+        # set files so app can run algorithms
+        self.controller.run_algorithm(
+            self.query_var.get(),
+            self.seq_var.get(),
+            self.algorithm_var.get()
+        )
+        self.controller._pages['Visualization'].load()
         self.controller.show('Visualization')
 ########### ########### ########### ###########
 
 ########### VISUALISATION PAGE TBD ###########
 class VisualizationPage(tk.Frame):
-    """TBD VISUALIZATION"""
+    """Displays hte results of running the algorithm"""
 
     def __init__(self, parent, controller):
         super().__init__(parent, bg = BG)
         self.controller = controller
-        self._build()
+        # self._build()
+
+    def load(self):
+        for widget in self.winfo_children():
+            widget.destroy()
+
+        if self.controller.results is None:
+            tk.Label(self, text='Algorithm not yet implemented',
+                     bg = BG,
+                     fg = DARK_GREEN,
+                     font = FONT_LABEL).pack(pady=20)
+            return
+
+        best_name, best_length, best_seq = self.controller.results
+        algorithm = self.controller.current_algorithm
+
+        # algorithm name
+        tk.Label(self,
+                 text = algorithm,
+                 bg = BG,
+                 fg = DARK_GREEN,
+                 font = FONT_TITLE).pack(pady=(30, 20))
+
+        # last 3 - centered, justified center
+        tk.Label(self, text=f'Best Match: {best_name}',
+                 bg=BG,
+                 fg=DARK_GREEN,
+                 font=('Arial', 14, 'bold'),
+                 justify='center').pack(pady=5)
+
+        tk.Label(self,
+                 text=f'Sequence Length: {best_length}',
+                 bg=BG,
+                 fg=DARK_GREEN,
+                 font=('Arial', 12, 'bold'),
+                 justify='center').pack(pady=5)
+
+        tk.Label(self,
+                 text=f'Sequence:\n{best_seq}',
+                 bg=BG,
+                 fg=DARK_GREEN,
+                 font=('Arial', 13),
+                 justify='center',
+                 wraplength=600).pack(pady=5)
 
     def _build(self):
         tk.Frame(self, bg = DARK_GREEN, height = 6).pack(fill = 'x')
@@ -285,7 +334,7 @@ class VisualizationPage(tk.Frame):
 ########### CONTROLLER ###########
 class App(tk.Tk):
     """
-    TODO: DOCUMENTATION
+    Runs GUI and controllers.
     """
     def __init__(self):
         super().__init__()
@@ -313,8 +362,18 @@ class App(tk.Tk):
 
         self.show('Welcome')
 
+    def run_algorithm(self, query_file, sequences_file, algorithm):
+        """"
+        Runs the algorithm selected in the GUI.
+        """
+        self.current_algorithm = algorithm
+        if algorithm == 'Longest-Common Subsequence':
+            import LCS
+            self.results = LCS.run(query_file, sequences_file)
+        else:
+            self.results = None
+
     def show(self, name):
-        """TODO: DOCUMENTATION"""
         self._pages[name].tkraise()
 
 if __name__ == "__main__":
