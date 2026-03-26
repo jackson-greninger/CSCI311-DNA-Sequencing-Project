@@ -77,6 +77,13 @@ def lcs(query, full_sequence):
 
     return dp[m][n], sequence_string # return the length of the longest sequence
 
+def run(query_path, database_path):
+    """Runs algorithm for GUI"""
+    target_dna = sd.open_qery_file(query_path)
+    headers, sequences = sd.clean_dna_sequence_dict(database_path)
+    best_name, best_score, best_sequence = find_most_similar_seq(target_dna, sequences, headers)
+    return best_name, best_score, best_sequence
+
 if __name__ == "__main__":
     # call lcs function
     target = "DNA_query.txt"
