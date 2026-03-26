@@ -45,7 +45,7 @@ def LCS(query, database):
                     res = max(res, dp_table[i][j])
                 else:
                     # otherwise, take the maximum between the left and below
-                    dp_table[i][j] = max(dp_table[i-1][j], dp_table[i][j-1])
+                    dp_table[i][j] = 0
         solutions.append(res)
     
     index = solutions.index(max(solutions))
