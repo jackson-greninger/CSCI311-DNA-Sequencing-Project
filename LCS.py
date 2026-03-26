@@ -75,13 +75,15 @@ def lcs(query, full_sequence):
     while i > 0 and j > 0:
         # if match, it was part of the LCS, move diagonally up-left
         if query[i - 1].upper() == full_sequence[j - 1].upper(): # if the characters match in the query
-            sequence_string += query[i - 1] # backtrack to create the string in order
+            sequence_string += query[i - 1] # backtrack to create the string in order; addinging to the sequence string
             i -= 1
             j -= 1
         elif dp[i - 1][j] >= dp[i][j - 1]:
             # if not match, move in the direction of the higher score
+            # move up
             i -= 1
         else:
+            # move left 
             j -= 1
 
     return dp[m][n], sequence_string[::-1] # return the length of the longest sequence
