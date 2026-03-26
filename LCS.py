@@ -18,15 +18,17 @@ def find_most_similar_seq(t, dna_sequence, headers):
                     int - index of the closest DNA sequence.
                     str - sequence of the closest DNA sequence.
     """
-
+    # initialize to ensure first comparison always updates
     best_sim = float("-inf")
     best_seq_index = None
     best_seq = ""
     
     for i in range(len(dna_sequence)):
         s_i = dna_sequence[i]
+        # call LCS
         sim, seq = lcs(s_i, t)
 
+        # update global best if current sequence is more similar
         if sim > best_sim:
             best_sim = sim
             best_seq_index = i
@@ -50,32 +52,41 @@ def lcs(query, full_sequence):
     m = len(query)
     n = len(full_sequence)
 
-    # initialize  a matrix with base cases 0
+    # 1. initialize  a matrix with base cases 0
+    # (m+1) x (n+1) table filled with 0s
     dp = [[0] * (n + 1) for _ in range(m+1)]
 
+    # 2. filling in the table
     for i in range(1, m + 1):
         for j in range(1, n + 1):
-            if query[i - 1] == full_sequence[j - 1]:
+            # if the characters match, increment the value from the top-left diagonal 
+            if query[i - 1].upper() == full_sequence[j - 1].upper():
                 dp[i][j] = dp[i - 1][j - 1] + 1
             else:
+                # if they don't match, keep the best score form above or the left
                 dp[i][j] = max(dp[i-1][j], dp[i][j-1])
 
-    # ACTUAL subsequence
+    # 3. ACTUAL subsequence
+    # start at the bottom-right corener and worl our way back to (0, 0)
     sequence_string = ""
     i = m
     j = n
 
     while i > 0 and j > 0:
-        if query[i - 1] == full_sequence[j - 1]: # if the characters match in the query
-            sequence_string += query[i - 1] # backtrack to create the string in order
+        # if match, it was part of the LCS, move diagonally up-left
+        if query[i - 1].upper() == full_sequence[j - 1].upper(): # if the characters match in the query
+            sequence_string += query[i - 1] # backtrack to create the string in order; addinging to the sequence string
             i -= 1
             j -= 1
         elif dp[i - 1][j] >= dp[i][j - 1]:
+            # if not match, move in the direction of the higher score
+            # move up
             i -= 1
         else:
+            # move left 
             j -= 1
 
-    return dp[m][n], sequence_string # return the length of the longest sequence
+    return dp[m][n], sequence_string[::-1] # return the length of the longest sequence
 
 def run(query_path, database_path):
     """Runs algorithm for GUI"""
