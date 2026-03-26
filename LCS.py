@@ -55,7 +55,7 @@ def lcs(query, full_sequence):
 
     for i in range(1, m + 1):
         for j in range(1, n + 1):
-            if query[i - 1] == full_sequence[j - 1]:
+            if query[i - 1].upper() == full_sequence[j - 1].upper():
                 dp[i][j] = dp[i - 1][j - 1] + 1
             else:
                 dp[i][j] = max(dp[i-1][j], dp[i][j-1])
@@ -75,7 +75,7 @@ def lcs(query, full_sequence):
         else:
             j -= 1
 
-    return dp[m][n], sequence_string # return the length of the longest sequence
+    return dp[m][n], sequence_string[::-1] # return the length of the longest sequence
 
 def run(query_path, database_path):
     """Runs algorithm for GUI"""
