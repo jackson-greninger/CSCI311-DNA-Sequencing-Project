@@ -370,6 +370,12 @@ class App(tk.Tk):
         if algorithm == 'Longest-Common Subsequence':
             import LCS
             self.results = LCS.run(query_file, sequences_file)
+        elif algorithm == 'Longest Common Substring':
+            import LongestCommonSubstring
+            self.results = LongestCommonSubstring.run(query_file, sequences_file)
+        elif algorithm == 'Needleman-Wunsch':
+            import NW
+            self.results = NW.run(query_file, sequences_file)
         else:
             self.results = None
 
