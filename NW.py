@@ -36,12 +36,12 @@ with open("DNA_sequences.txt", "r") as f:
 
 # Scoring settings (https://en.wikipedia.org/wiki/Needleman%E2%80%93Wunsch_algorithm#Basic_scoring_schemes)
 d = -1          # gap penalty
-MATCH = 0       # score when two bases are the same
-MISMATCH = -1   # score when two bases differ
+MATCH = 0       # length when two bases are the same
+MISMATCH = -1   # length when two bases differ
 
 
 def S(base_a, base_b):
-    # Substitution score: reward a match, penalize a mismatch
+    # Substitution length: reward a match, penalize a mismatch
     if base_a == base_b:
         return MATCH
     else:
@@ -72,8 +72,9 @@ def needleman_wunsch(A, B):
             insert = F[i][j-1]   + d                    # left:     gap in A
             F[i][j] = max(match, delete, insert)
 
-    # The bottom-right cell holds the final alignment score
-    return F[rows-1][cols-1]
+    # The bottom-right cell holds the final alignment length
+    # return F[rows-1][cols-1]
+    return F #return whole grid instead
 
 
 # Compare query against every stored sequence
@@ -84,17 +85,67 @@ print()
 print("Aligning query against all stored sequences...")
 print()
 
-best_score = None
+best_length = None
 best_name  = None
 
 for name, sequence in stored_sequences:
-    score = needleman_wunsch(query_sequence, sequence)
-    print(f"  Score {score:>8}  |  {name[:70]}")
+    F = needleman_wunsch(query_sequence, sequence)
+    length = F[len(query_sequence)][len(sequence)]
+    print(f"  length {length:>8}  |  {name[:70]}")
 
-    if best_score is None or score > best_score:
-        best_score = score
+    if best_length is None or length > best_length:
+        best_length = length
         best_name  = name
 
 print()
-print(f"Best match (score {best_score}):")
+print(f"Best match (length {best_length}):")
 print(f"  {best_name}")
+
+
+def run(query_path, sequences_path):
+    with open(query_path, "r") as f:
+        query = "".join(line.strip() for line in f)
+
+    stored = []
+    # sequence processing step
+    with open(sequences_path, "r") as f:
+        current_name = None
+        current_lines = []
+        for line in f:
+            line = line.strip()
+            if line.startswith(">"):
+                if current_name:
+                    stored.append((current_name, "".join(current_lines)))
+                current_name = line[1:]
+                current_lines = []
+            elif line:
+                current_lines.append(line)
+        if current_name:
+            stored.append((current_name, "".join(current_lines)))
+
+    best_length = None
+    best_name = None
+    best_seq = ""
+
+    for name, seq in stored:
+        F = needleman_wunsch(query, seq)
+        length = F[len(query)][len(seq)]
+        if best_length is None or length > best_length:
+            best_length = length
+            best_name = name
+
+            # backtracking starting in bottom right
+            i, j = len(query), len(seq)
+            result = ""
+            while i > 0 and j > 0:
+                if F[i][j] == F[i-1][j-1] + S(query[i-1], seq[j-1]):
+                    result += query[i-1]
+                    i -= 1
+                    j -= 1
+                elif F[i][j] == F[i-1][j] + d:
+                    i -= 1
+                else:
+                    j -= 1
+            best_seq = result[::-1]
+
+    return best_name, best_length, best_seq
