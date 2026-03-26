@@ -46,16 +46,30 @@ def LCS(query, database):
                 else:
                     # otherwise, take the maximum between the left and below
                     dp_table[i][j] = 0
-        solutions.append(res)
-    
+
+        # backtrack and save best sequence
+        best_seq = ""
+        for i in range(1, m + 1):
+            for j in range(1, n + 1):
+                if dp_table[i][j] == res:
+                    best_seq = contents[i - res:i]
+
+        solutions.append(res, best_seq) #
+
+    best_length, best_seq = max(solutions)
     index = solutions.index(max(solutions))
-    names = list(database.keys())
-    name = names[index]
+    name = list(database.keys())[index]
     
     print(f"The closest match to your query is: |{name}| with a common nucloetide string of {max(solutions)}.")
     
-    return
-        
+    return name, best_length, best_seq
+
+def run(query_path, database_path):
+    """Run function for GUI."""
+    cleaned_database = clean_file(database_path)
+    name, length, sequence = LCS(query_path, cleaned_database)
+    return name, length, sequence
+
 if __name__ == "__main__":
     query = "DNA_query.txt"
     database = "DNA_sequences.txt"
