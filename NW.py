@@ -36,7 +36,7 @@ with open("DNA_sequences.txt", "r") as f:
 
 # Scoring settings (https://en.wikipedia.org/wiki/Needleman%E2%80%93Wunsch_algorithm#Basic_scoring_schemes)
 d = -1          # gap penalty
-MATCH = 0       # length when two bases are the same
+MATCH = 1       # length when two bases are the same
 MISMATCH = -1   # length when two bases differ
 
 
