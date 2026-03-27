@@ -97,7 +97,7 @@ def run(query_path, database_path):
 
 if __name__ == "__main__":
     # call lcs function
-    target = "DNA_query.txt"
+    target = "test3.txt"
     database = "DNA_sequences.txt"
     
     target_dna = sd.open_qery_file(target)
