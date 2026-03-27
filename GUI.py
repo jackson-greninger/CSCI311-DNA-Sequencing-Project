@@ -280,6 +280,17 @@ class VisualizationPage(tk.Frame):
         for widget in self.winfo_children():
             widget.destroy()
 
+        # back button to file selection page
+        tk.Button(self,
+                  text = 'Back',
+                  bg = DARK_GREEN,
+                  fg = 'white',
+                  relief = 'flat',
+                  font = ('Arial', 11),
+                  cursor ='hand2',
+                  command = lambda: self.controller.show('FileSelection')
+                  ).pack(anchor = 'ne', padx = 16, pady = 8)
+
         if self.controller.results is None:
             tk.Label(self, text='Algorithm not yet implemented',
                      bg = BG,
